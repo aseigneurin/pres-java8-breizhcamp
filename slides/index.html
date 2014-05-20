@@ -47,7 +47,7 @@
 					<p style="font-size: 0.6em">(Flèches droite/gauche et haut/bas pour naviguer, ESC pour tout afficher)</p>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<section>
 						<h2>Interface fonctionnelle</h2>
 						<ul>
@@ -87,7 +87,7 @@ multiple non-overriding abstract methods found in interface com.seigneurin.Examp
 					</section>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<section>
 						<h1>Retour en arrière</h1>
 					</section>
@@ -160,7 +160,7 @@ Name res = parser.parse("Eric Clapton", new Creator&lt;Name&gt;() {
 					</section>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<section>
 						<h1>Java 8</h1>
 					</section>
@@ -252,10 +252,14 @@ Name res = parser.parse("Eric Clapton", (s1, s2) -> new Name(s1, s2));
 						<pre><code data-trim contenteditable class="java">
 Name res = parser.parse("Eric Clapton", (s1, s2) -> Factory.createName(s1, s2));
         		</code></pre>
+						<pre><code data-trim contenteditable class="java">
+Factory factory = new Factory();
+Name res = parser.parse("Eric Clapton", (s1, s2) -> factory.createName(s1, s2));
+        		</code></pre>
 					</section>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<section>
 						<h1>Intefaces fonctionnelles du JDK</h1>
 					</section>
@@ -286,7 +290,7 @@ Name res = parser.parse("Eric Clapton", (s1, s2) -> Factory.createName(s1, s2));
 					</section>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<section>
 						<h1>Plusieurs méthodes ?</h1>
 					</section>
@@ -294,11 +298,11 @@ Name res = parser.parse("Eric Clapton", (s1, s2) -> Factory.createName(s1, s2));
 					<section>
 						<h2>Java &lt; 8</h2>
 						<pre><code data-trim contenteditable class="java">
-private interface Operation&lt;T&gt;
+public interface Operation&lt;T&gt;
 {
-    public T function();
-    public void onSuccess(T res);
-    public void onError(Exception ex);
+    T function();
+    void onSuccess(T res);
+    void onError(Exception ex);
 }
         		</code></pre>
 						<pre><code data-trim contenteditable class="java">
@@ -361,7 +365,7 @@ doSomething(
 					</section>
 				</section>
 
-				<section>
+				<section data-background="images/Slide_2.PNG">
 					<h1>Questions ?</h1>
 					<p><a href="https://twitter.com/ASeigneurin">@aseigneurin</a></p>
 					<p>Code : <a href="https://github.com/aseigneurin/pres-java8-breizhcamp">github.com/aseigneurin/pres-java8-breizhcamp</a></p>
