@@ -48,14 +48,317 @@
 				</section>
 
 				<section>
-					<h2>Demandez le programme</h2>
-					<ul>
-						<li>aaa</li>
-						<li class="fragment">Aaa</li>
-					</ul>
-					<pre><code data-trim contenteditable class="java">
-aaa
-					</code></pre>
+					<section>
+						<h2>Interface fonctionnelle</h2>
+						<ul>
+							<li>Interface avec une seule méthode abstraite</li>
+							<li>Méthodes par défaut = non-abstraites</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Annotation</h2>
+						<ul>
+							<li>@java.lang.FunctionalInterface</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+@FunctionalInterface
+public interface ExampleInterface {
+
+    void doSomething();
+
+    default int methodWithDefaultImpl() {
+        return 0;
+    }
+
+}
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Vérification par le compilateur</h2>
+						<pre><code data-trim contenteditable>
+Unexpected @FunctionalInterface annotation
+
+com.seigneurin.ExampleInterface is not a functional interface
+
+multiple non-overriding abstract methods found in interface com.seigneurin.ExampleInterface
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Retour en arrière</h1>
+					</section>
+
+					<section>
+						<h2>Java &lt; 8</h2>
+						<ul>
+							<li>Callback = classes anonymes</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+Button btn = new Button();
+btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() {
+    @Override
+    public void handle(ActionEvent event) {
+        System.out.println("Hello World!");
+    }
+});
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Exemple</h2>
+						<ul>
+							<li>On veut parser des noms : NameParser</li>
+							<li>Création du nom déléguée : Creator</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+public class NameParser {
+    public &lt;T&gt; T parse(String name, Creator&lt;T&gt; creator) {
+        String[] tokens = name.split(" ");
+        String firstName = tokens[0];
+        String lastName = tokens[1];
+        return creator.create(firstName, lastName);
+    }
+}
+
+public interface Creator&lt;T&gt; {
+    T create(String firstName, String lastName);
+}
+
+public class Name {
+
+   private String firstName;
+   private String lastName;
+
+   public Name(String firstName, String lastName) {
+       this.firstName = firstName;
+       this.lastName = lastName;
+   }
+
+   public String getFirstName() { return firstName; }
+   public String getLastName() { return lastName; }
+
+}
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Classe anonyme</h2>
+						<pre><code data-trim contenteditable class="java">
+NameParser parser = new NameParser();
+
+Name res = parser.parse("Eric Clapton", new Creator&lt;Name&gt;() {
+    @Override
+    public Name create(String firstName, String lastName) {
+        return new Name(firstName, lastName);
+    }
+});
+        		</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Java 8</h1>
+					</section>
+
+					<section>
+						<h2>@FunctionalInterface</h2>
+						<ul>
+							<li>Annotation optionnelle</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+@FunctionalInterface
+public interface Creator&lt;T&gt; {
+    T create(String firstName, String lastName);
+}
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Appel : une méthode...</h2>
+						<ul>
+							<li>Avec 2 paramètres de type String</li>
+							<li>Retour de type générique</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Code appelé...</h2>
+						<ul>
+							<li>Méthode create() simulée par le compilateur</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Référence vers un constructeur</h2>
+						<ul>
+							<li>Notation : "Classe::new"</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+NameParser parser = new NameParser();
+
+Name res = parser.parse("Eric Clapton", Name::new);
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Référence vers une méthode statique</h2>
+						<ul>
+							<li>Notation : "Classe::méthode"</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+public class Factory {
+    public static Name createName(String firstName, String lastName) {
+        return new Name(firstName, lastName);
+    }
+}
+        		</code></pre>
+						<pre><code data-trim contenteditable class="java">
+NameParser parser = new NameParser();
+
+Name res = parser.parse("Eric Clapton", Factory::createName);
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Référence vers une méthode d’instance</h2>
+						<ul>
+							<li>Notation : "instance::méthode"</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+public class Factory {
+    public Name createName(String firstName, String lastName) {
+        return new Name(firstName, lastName);
+    }
+}
+        		</code></pre>
+						<pre><code data-trim contenteditable class="java">
+Factory factory = new Factory();
+NameParser parser = new NameParser();
+
+Name res = parser.parse("Eric Clapton", factory::createName);
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Expression lambda</h2>
+						<pre><code data-trim contenteditable class="java">
+Name res = parser.parse("Eric Clapton", (s1, s2) -> new Name(s1, s2));
+        		</code></pre>
+						<pre><code data-trim contenteditable class="java">
+Name res = parser.parse("Eric Clapton", (s1, s2) -> Factory.createName(s1, s2));
+        		</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Intefaces fonctionnelles du JDK</h1>
+					</section>
+
+					<section>
+						<h2>Package java.util.function</h2>
+						<ul>
+							<li>Consumer&lt;T&gt;</li>
+							<ul>
+								<li>void accept(T);</li>
+							</ul>
+							<br>
+							<li>Function&lt;T, R&gt;</li>
+							<ul>
+								<li>R apply(T);</li>
+							</ul>
+							<br>
+							<li>Supplier&lt;T&gt;</li>
+							<ul>
+								<li>T get();</li>
+							</ul>
+							<br>
+							<li>Predicate</li>
+							<ul>
+								<li>boolean test(T);</li>
+							</ul>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>Plusieurs méthodes ?</h1>
+					</section>
+
+					<section>
+						<h2>Java &lt; 8</h2>
+						<pre><code data-trim contenteditable class="java">
+private interface Operation&lt;T&gt;
+{
+    public T function();
+    public void onSuccess(T res);
+    public void onError(Exception ex);
+}
+        		</code></pre>
+						<pre><code data-trim contenteditable class="java">
+public &lt;T&gt; void doSomething(Operation&lt;T&gt; operation) {
+    try {
+        T res = operation.function();
+        operation.onSuccess(res);
+    } catch (Exception ex) {
+        operation.onError(ex);
+    }
+}
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Appel très verbeux</h2>
+						<pre><code data-trim contenteditable class="java">
+doSomething(new Operation&lt;Object&gt;() {
+    @Override
+    public Object function() {
+        return 42;
+    }
+    @Override
+    public void onSuccess(Object res) {
+        System.out.println(res);
+    }
+    @Override
+    public void onError(Exception ex) {
+        System.err.println("Error: " + ex.getMessage());
+    }
+});
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Java 8</h2>
+						<ul>
+							<li>Stratégie = découper l'interface</li>
+						</ul>
+						<pre><code data-trim contenteditable class="java">
+public &lt;T&gt; void doSomething(Supplier&lt;T&gt; function, Consumer&lt;T&gt; onSuccess, Consumer&lt;Exception&gt; onError) {
+   try {
+       T res = function.get();
+       onSuccess.accept(res);
+   } catch (Exception ex) {
+       onError.accept(ex);
+   }
+}
+        		</code></pre>
+					</section>
+
+					<section>
+						<h2>Appel simplifié</h2>
+						<pre><code data-trim contenteditable class="java">
+doSomething(
+    () -> 42,
+    System.out::println,
+    ex -> System.err.println("Error: " + ex.getMessage()));
+        		</code></pre>
+					</section>
 				</section>
 
 				<section>
